@@ -1,31 +1,50 @@
-# Change these first
-owner: upptime # Your GitHub organization or username, where this repository lives
-repo: upptime # The name of this repository
+# Upptime config for the YGGR public status page.
+# Docs: https://upptime.js.org/docs/configuration
+# Context: ADR-004 in ambushhere/yggr-compute (docs/adr/ADR-004-public-status-page.md).
+owner: ambushhere
+repo: yggr-status
+
+# Upptime opens a GitHub issue when a site goes down and assigns it here.
+assignees:
+  - ambushhere
 
 sites:
-  - name: Google
-    url: https://www.google.com
-  - name: Wikipedia
-    url: https://en.wikipedia.org
-  - name: Hacker News
-    url: https://news.ycombinator.com
-  - name: Secret Site
-    url: $SECRET_SITE
+  # Landing page (GitHub Pages).
+  - name: Website
+    url: https://yggr.io
+
+  # Customer portal (Next.js behind Caddy on the production host).
+  - name: Customer portal
+    url: https://app.yggr.io/api/health
+
+  # Public REST API. Unauthenticated requests must get 401 from the API
+  # handler; anything else (5xx, timeout, Caddy error page) means it is down.
+  - name: Public API
+    url: https://app.yggr.io/api/v1/instances
+    expectedStatusCodes:
+      - 401
+
+  # OPTIONAL: team chat (Zulip). Jonatan has not decided whether it is public.
+  # Zulip's /health is localhost-only (403), so use the public settings endpoint.
+  # - name: Team chat
+  #   url: https://chat.yggr.io/api/v1/server_settings
 
 status-website:
-  # Add your custom domain name, or remove the `cname` line if you don't have a domain
-  # Uncomment the `baseUrl` line if you don't have a custom domain and add your repo name there
-  cname: demo.upptime.js.org
-  # baseUrl: /your-repo-name
-  logoUrl: https://raw.githubusercontent.com/upptime/upptime.js.org/master/static/img/icon.svg
-  name: Upptime
-  introTitle: "**Upptime** is the open-source uptime monitor and status page, powered entirely by GitHub."
-  introMessage: This is a sample status page which uses **real-time** data from our [GitHub repository](https://github.com/upptime/upptime). No server required — just GitHub Actions, Issues, and Pages. [**Get your own for free**](https://github.com/upptime/upptime)
+  # Phase 1 (until status.yggr.io CNAME exists at GoDaddy): served at
+  # https://ambushhere.github.io/yggr-status/ via baseUrl.
+  # Phase 2 (after DNS): remove baseUrl, uncomment cname.
+  # cname: status.yggr.io
+  baseUrl: /yggr-status
+  name: YGGR Status
+  introTitle: "**YGGR Compute** service status"
+  introMessage: >-
+    Live availability of the YGGR website, customer portal and public API,
+    checked every 5 minutes from outside our infrastructure. Incidents and
+    maintenance are posted here.
   navbar:
     - title: Status
       href: /
-    - title: GitHub
-      href: https://github.com/$OWNER/$REPO
-
-# Upptime also supports notifications, assigning issues, and more
-# See https://upptime.js.org/docs/configuration
+    - title: yggr.io
+      href: https://yggr.io
+    - title: Incidents
+      href: https://github.com/$OWNER/$REPO/issues?q=label%3Aincident
